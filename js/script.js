@@ -72,6 +72,6 @@ function toNum(str, boardInUse) {
   return numString;
 }
 
-// use below for testing
-let encrypted = toNum("enter text here", alpha);
+// use below for testing functionality
+let encrypted = toNum("enter text here", alpha); // <- use this line to enter your text and select checkerboard
 console.log(encrypted);
