@@ -1,77 +1,85 @@
 // predefined straddling checkerboards
-const alpha = {
-  row1: "AT ONE SIR",
-  row1id: "0123456789",
-  row2: "BCDFGHJKLM",
-  row2id: "2",
-  row3: "PQUVWXYZ #",
-  row3id: "6",
-};
+function Checkerboard(row1, row2, row3, row4, rowId) {
+  this.row1 = row1;
+  this.row2 = row2;
+  this.row3 = row3;
+  this.row4 = row4;
+  this.rowId = rowId;
+}
 
-const beta = {
-  row1: "ESTONIA R ",
-  row1id: "0123456789",
-  row2: "BCDFGHJKLM",
-  row2id: "7",
-  row3: "PQUVWXYZ #",
-  row3id: "9",
-};
-
-const gamma = {
-  row1: "RAT  NOISE",
-  row1id: "0123456789",
-  row2: "BCDFGHJKLM",
-  row2id: "3",
-  row3: "PQUVWXYZ #",
-  row3id: "4",
-};
+let checkerboard01 = new Checkerboard(
+  "AT ONE SIR",
+  "BCDFGHJKLM",
+  "PQUVWXYZ/#",
+  "",
+  "26"
+);
+let checkerboard02 = new Checkerboard(
+  "ESTONIA   ",
+  "BCDFGHJKLM",
+  "PQRUVWXYZ#",
+  " .,'?!/+-=",
+  "789"
+);
 
 // activates selected checkerBoard, using fallback if none or incorrect selected
-function checkerBoardSelector(checkerBoardName) {
-  let availableBoards = [alpha, beta, gamma];
-  let fallback = alpha;
-  for (var i = 0; i < availableBoards.length; i++) {
-    currentBoard = availableBoards[i];
-    if (currentBoard === checkerBoardName) {
-      checkerBoard = currentBoard;
+function checkerboardSelector(myCheckerboard) {
+  let fallback = checkerboard01;
+  for (var i = 0; i < Checkerboard.length; i++) {
+    let currentBoard = Checkerboard[i];
+    if (currentBoard === myCheckerboard) {
+      activeCheckerboard = currentBoard;
       break;
     }
-    if (checkerBoardName !== availableBoards[i]) {
-      checkerBoard = fallback;
+    if (myCheckerboard !== Checkerboard[i]) {
+      activeCheckerboard = fallback;
     }
   }
-  return checkerBoard;
+  return activeCheckerboard;
 }
 
 // converts each letter of string its number defined in selected checkerboard
-function letterToNum(letter, checkerBoard) {
+function letterToNum(letter, activeCheckerboard) {
   let num;
-  for (let i = 0; i < checkerBoard.row1.length; i++) {
-    if (i === checkerBoard.row1.indexOf(letter)) {
-      num = checkerBoard.row1id.charAt(checkerBoard.row1.indexOf(letter));
-    } else if (i === checkerBoard.row2.indexOf(letter)) {
-      num = checkerBoard.row2id + checkerBoard.row2.indexOf(letter).toFixed();
-    } else if (i === checkerBoard.row3.indexOf(letter)) {
-      num = checkerBoard.row3id + checkerBoard.row3.indexOf(letter).toFixed();
+  for (let i = 0; i < activeCheckerboard.row1.length; i++) {
+    if (i === activeCheckerboard.row1.indexOf(letter)) {
+      num = activeCheckerboard.row1.indexOf(letter);
+    } else if (i === activeCheckerboard.row2.indexOf(letter)) {
+      num =
+        activeCheckerboard.rowId[0] +
+        activeCheckerboard.row2.indexOf(letter).toFixed();
+    } else if (i === activeCheckerboard.row3.indexOf(letter)) {
+      num =
+        activeCheckerboard.rowId[1] +
+        activeCheckerboard.row3.indexOf(letter).toFixed();
+    } else if (i === activeCheckerboard.row4.indexOf(letter)) {
+      num =
+        activeCheckerboard.rowId[2] +
+        activeCheckerboard.row4.indexOf(letter).toFixed();
     }
   }
   return num;
 }
 
 // converts string of text to string of numbers using selected checkerboard
-function toNum(str, boardInUse) {
-  var boardInUse = checkerBoardSelector(boardInUse);
+function straddlingCheckerboard(str, myCheckerboard) {
+  // <- str = the text to encrypt, checkerboard = the table used
+  let activeCheckerboard = myCheckerboard;
+  activeCheckerboard = checkerboardSelector(myCheckerboard);
   str = str.toUpperCase();
   str = str.replace(/[^A-Z #]/g, ""); // add or exclude characters as required by checkerboard
   let numString = "";
   for (let i = 0; i < str.length; i++) {
     let current = str[i];
-    current = letterToNum(current, boardInUse);
+    current = letterToNum(current, myCheckerboard);
     numString += current;
   }
   return numString;
 }
 
 // use below for testing functionality
-let encrypted = toNum("enter text here", alpha); // <- use this line to enter your text and select checkerboard
+let encrypted = straddlingCheckerboard(
+  "hello my name is lucifer i am the bringer of light",
+  checkerboard02
+); // <- use this line to enter text and select checkerboard
 console.log(encrypted);
